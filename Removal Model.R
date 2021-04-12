@@ -7,7 +7,6 @@ library(R2jags)
 library(coda)
 library(FSA)
 
-setwd("H:/Removal_Model")
 seed <- 111
 set.seed(seed)
 
@@ -67,7 +66,7 @@ nb <- 50000 # burn in value
 nt <- 20 # thinning rate
 
 # model file
-sink("removal.model.bug")
+sink("removal.model.jags")
 cat("model {
     
     for (i in 1:Nsite) {
@@ -129,6 +128,6 @@ params <- c("n", "nt","mu.n", "q", "sigma.n","b.size", "b0", "b0.mu", "b0.tau", 
 # save model output as an object
 jagsfit <- R2jags::jags(data = data, parameters.to.save = params, n.chains = nc,
                         n.iter = ni, n.thin = nt, n.burnin = nb, 
-                        model.file = "removal.model.bug")
+                        model.file = "removal.model.jags")
 
 print(jagsfit)

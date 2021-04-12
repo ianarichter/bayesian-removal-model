@@ -1,0 +1,48 @@
+model {
+    
+    for (i in 1:Nsite) {
+      for (j in 1:Nsizeclass) {
+    
+      c1[i,j] ~ dbin(q[i,j], n[i,j]) # pass 1 catch
+      n2[i,j] <- n[i,j] - c1[i,j] # remaining population after pass 1
+      c2[i,j] ~ dbin(q[i,j], n2[i,j]) # pass 2 catch
+      n3[i,j] <- n2[i,j] - c2[i,j] # remaining population after pass 2
+      c3[i,j] ~ dbin(q[i,j], n3[i,j]) # pass 3 catch
+  
+      n[i,j] <- round(nz[i,j])
+      nz[i,j] ~ dlnorm(mu.n[j], tau.n[j]) # initial population size
+
+      # capture probability function
+      logit(q[i,j]) <- b0[i] + b.size*size[j] 
+
+      bio[i,j] <- n[i,j] * gmw[i,j] # size class biomass
+      
+      # predicted values
+      c1_pred[i,j] <- n[i,j] * q[i,j]
+      c2_pred[i,j] <- n2[i,j] * q[i,j]
+      c3_pred[i,j] <- n3[i,j] * q[i,j]
+      }
+
+    # random site effect
+    b0[i] ~ dnorm(b0.mu, b0.tau)
+
+    # site population size
+    nt[i] <- sum(n[i,]) 
+    # site biomass
+    bio_site[i] <- sum(bio[i,]) 
+    
+    }
+    
+    # population size hyperparameters
+    for (y in 1:Nsizeclass) {
+    mu.n[y] ~ dunif(0,20) # mean
+    tau.n[y] ~ dunif(0.0000001, 1) # precision
+    sigma.n[y] <- 1/sqrt(tau.n[y]) # standard deviation
+    }
+
+    # priors
+    b0.mu ~ dnorm(0, 0.0001)
+    b0.tau ~ dunif(0,5)
+    b.size ~ dnorm(0, 0.0001)
+
+    }
