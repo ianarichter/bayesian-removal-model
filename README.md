@@ -15,9 +15,11 @@ Here are the main steps to using the model:
 - Save model output
 
 Data:
+
 The example data consists of fish catch data from three-pass samples from two different sites. Each fish that is captured is measured and weighed. 
 
 Model structure:
+
 The sampling procedure for multi-pass removal sampling involves removing individuals from a closed population from consecutive passes. The catch of size class j at site i is dependent on the population size (n[i,j]) and the probability of capture (q[i,j]). The fish catch in the first pass (c1[i,j]) then follows a binomial distribution where there are two possible outcomes - caught or not caught - and population size represents the number of independent trials. Catches in the subsequent passes (second and third pass) are based on the intial populiaton and the number of individuals removed in the previous passes. After every pass, the number of individuals removed from the population is subtracted from the initial population to obtain the population size for the subsequent pass (n2[i,j] = n[i,j] - c1[i,j]). We assume that capture probability is constant across passes to simplify the model. 
 
 Biomass is the product of population size and geometric mean weight (bio[i,j] = n[i,j] * gmw[i,j]).
